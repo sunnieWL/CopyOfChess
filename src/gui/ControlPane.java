@@ -22,16 +22,30 @@ public class ControlPane extends VBox {
     private static Text turnIndicatorText; // To indicate whose turn it is
     private static Piece promotedPiece;
 
-    public ControlPane() {
+    public ControlPane(boolean isGamble) {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(20);
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
-
+        
+        if(isGamble) {
+            GamblePane gamblePane = new GamblePane();
+            gamblePane.setPrefWidth(400);  
+            gamblePane.setPrefHeight(75);
+            this.getChildren().add(gamblePane);
+           }
+        
         // Initialize timer panes with enhanced styles
         whiteTimerPane = new TimerPane(0);
         blackTimerPane = new TimerPane(1);
-        styleTimerPane(whiteTimerPane);
-        styleTimerPane(blackTimerPane);
+        
+        // Create Text labels for "White Time" and "Black Time"
+        Text whiteTimeLabel = new Text("White Time");
+        whiteTimeLabel.setFont(new Font("Arial", 18));
+        whiteTimeLabel.setFill(Color.WHITE);
+
+        Text blackTimeLabel = new Text("Black Time");
+        blackTimeLabel.setFont(new Font("Arial", 18));
+        blackTimeLabel.setFill(Color.WHITE);
 
         // Game Status Text
         gameStatusText = new Text("Game Started!");
@@ -44,13 +58,18 @@ public class ControlPane extends VBox {
         turnIndicatorText.setFill(Color.LIGHTBLUE);
 
         // Add components to the pane
-        this.getChildren().addAll(whiteTimerPane, blackTimerPane, gameStatusText, turnIndicatorText);
+        this.getChildren().addAll(
+            whiteTimeLabel, whiteTimerPane, // Add White Time Label and Timer
+            blackTimeLabel, blackTimerPane, // Add Black Time Label and Timer
+            gameStatusText, turnIndicatorText
+        );
 
         // Promotion Buttons
         VBox promotionButtons = createPromotionButtons();
         this.getChildren().add(promotionButtons);
     }
 
+    
     private void styleTimerPane(TimerPane timerPane) {
         timerPane.setScaleX(1.5);
         timerPane.setScaleY(1.5);

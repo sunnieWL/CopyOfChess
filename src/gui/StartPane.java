@@ -65,7 +65,7 @@ public class StartPane extends VBox {
                 Board board = game.getBoard();
                 ChessBoardView boardView = new ChessBoardView(board, game);
                 
-                ControlPane controlPane = new ControlPane();
+                ControlPane controlPane = new ControlPane(selectedMode == "Gamble" ? true: false);
                 
                 // Create an HBox layout to put ControlPane on the right side
                 HBox root = new HBox(20);
