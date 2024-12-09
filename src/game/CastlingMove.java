@@ -21,7 +21,9 @@ public class CastlingMove extends Move {
         // Move the king
         boolean kingMoved = board.movePiece(from, to);
         // Move the rook
-        boolean rookMoved = board.movePiece(rookFrom, rookTo);
-        return kingMoved && rookMoved;
+        board.setPieceAt(rookTo, rook);
+        board.removePiece(rookFrom);
+        rook.move(rookTo);
+        return kingMoved;
     }
 }

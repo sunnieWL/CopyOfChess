@@ -100,7 +100,27 @@ public class Game {
                 throw new IllegalArgumentException("Invalid move.");
             }
 
-            Move move = new StandardMove(piece, from, to);
+            Move move;
+            if (piece instanceof King && Math.abs(to.getY() - from.getY()) == 2) {
+                // Castling move
+                Rook rook;
+                Position rookFrom, rookTo;
+                if (to.getY() > from.getY()) {
+                    // Kingside
+                    rookFrom = new Position(from.getX(), 7);
+                    rookTo = new Position(from.getX(), 5);
+                } else {
+                    // Queenside
+                    rookFrom = new Position(from.getX(), 0);
+                    rookTo = new Position(from.getX(), 3);
+                }
+                rook = (Rook) board.getPieceAt(rookFrom);
+                move = new CastlingMove((King) piece, rook, from, to, rookFrom, rookTo);
+            } else {
+                // Standard move
+                move = new StandardMove(piece, from, to);
+            }
+            
             move.execute(board);
             moveHistory.add(move);
             

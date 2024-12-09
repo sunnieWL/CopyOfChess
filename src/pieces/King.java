@@ -27,7 +27,63 @@ public class King extends Piece {
                 }
             }
         }
+        if (!this.hasMoved) {
+            // Kingside castling
+            if (canCastleKingside(board)) {
+                validMoves.add(new Position(position.getX(), position.getY() + 2));
+            }
+            // Queenside castling
+            if (canCastleQueenside(board)) {
+                validMoves.add(new Position(position.getX(), position.getY() - 2));
+            }
+        }
+
         return validMoves;
+    }
+    
+    private boolean canCastleKingside(Board board) {
+        // Assuming white is at row 7 and black at row 0
+        int row = position.getX();
+        Piece rookPiece = board.getPieceAt(row, 7);
+        if (!(rookPiece instanceof Rook) || rookPiece.hasMoved()) {
+            return false;
+        }
+        // Check if squares between king and rook are empty
+        for (int y = position.getY() + 1; y < 7; y++) {
+            if (board.getPieceAt(row, y) != null) {
+                return false;
+            }
+        }
+        // Check if squares king passes through are not under attack
+        for (int y = position.getY(); y <= position.getY() + 2; y++) {
+            Position pos = new Position(row, y);
+            if (board.isSquareUnderAttack(pos, this.color)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean canCastleQueenside(Board board) {
+        int row = position.getX();
+        Piece rookPiece = board.getPieceAt(row, 0);
+        if (!(rookPiece instanceof Rook) || rookPiece.hasMoved()) {
+            return false;
+        }
+        // Check if squares between king and rook are empty
+        for (int y = position.getY() - 1; y > 0; y--) {
+            if (board.getPieceAt(row, y) != null) {
+                return false;
+            }
+        }
+        // Check if squares king passes through are not under attack
+        for (int y = position.getY(); y >= position.getY() - 2; y--) {
+            Position pos = new Position(row, y);
+            if (board.isSquareUnderAttack(pos, this.color)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

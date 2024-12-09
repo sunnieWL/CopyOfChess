@@ -68,7 +68,13 @@ public class Board {
     public void setPieceAt(Position position, Piece piece) {
         grid[position.getX()][position.getY()] = piece;
     }
-
+    
+    public void removePiece(Position pos) {
+        if (isValidPosition(pos.getX(), pos.getY())) {
+            grid[pos.getX()][pos.getY()] = null;
+        }
+    }
+    
     public boolean movePiece(Position from, Position to) {
         if (!isValidPosition(from.getX(), from.getY()) || !isValidPosition(to.getX(), to.getY())) {
             return false;
@@ -125,6 +131,18 @@ public class Board {
             }
         }
         return newBoard;
+    }
+    
+    public boolean isSquareUnderAttack(Position pos, String defendingColor) {
+        String opponentColor = defendingColor.equals("white") ? "black" : "white";
+        List<Piece> opponentPieces = getAllPieces(opponentColor);
+        for (Piece piece : opponentPieces) {
+            List<Position> moves = piece.getValidMoves(this);
+            if (moves.contains(pos)) {
+                return true;
+            }
+        }
+        return false;
     }
 //    // For debug
 //    public void display() {
