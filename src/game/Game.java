@@ -195,18 +195,21 @@ public class Game {
 
         int x = opponentPiecePos.getX() + dx;
         int y = opponentPiecePos.getY() + dy;
-
+        
+        int blocker = 0;
+        
         while (x != kingPos.getX() || y != kingPos.getY()) {
             if (board.getPieceAt(x, y) != null) {
                 if (board.getPieceAt(x, y).equals(piece)) {
-                    return true; 
+                    blocker++; 
                 } else {
-                    return false; 
+                    blocker++; 
                 }
             }
             x += dx;
             y += dy;
         }
+        if(blocker == 1) return true;
         return false; 
     }
     
