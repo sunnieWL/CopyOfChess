@@ -13,6 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import game.Game;
 import game.Board;
+import game.GambleGame;
 import model.Player;
 import gui.ChessBoardView;
 
@@ -56,30 +57,46 @@ public class StartPane extends VBox {
             if (selectedMode != null) {
                 System.out.println("Starting the game in " + selectedMode + " mode.");
 
-                // Initialize the game and board
-                Game game = new Game(null, null);
-                Player white = new Player("White", "white", game);
-                Player black = new Player("Black", "black", game);
-                game = new Game(white, black);  // Reset the game with players
-
-                Board board = game.getBoard();
-                ChessBoardView boardView = new ChessBoardView(board, game);
+                boolean isGamble = selectedMode == "Gamble" ? true: false ;
                 
-                ControlPane controlPane = new ControlPane(selectedMode == "Gamble" ? true: false);
                 
-                // Create an HBox layout to put ControlPane on the right side
-                HBox root = new HBox(20);
-
-                root.getChildren().addAll(boardView, controlPane);
-
-                // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
-                Scene gameScene = new Scene(root, 960, 640);  // Increase the width here (960px for both components)
-                primaryStage.setScene(gameScene);
+                Player white = new Player("White", "white", null);
+                Player black = new Player("Black", "black", null);
                 
-                // Ensure the game starts
-                System.out.println("Calling GameLogic.newGame()");
+                if(isGamble) {
+                    GambleGame game = new GambleGame(white, black);
+                    Board board = game.getBoard();
+                    ChessBoardView boardView = new ChessBoardView(board, game);
+                    ControlPane controlPane = new ControlPane(isGamble);
+                    HBox root = new HBox(20);
+                    root.getChildren().addAll(boardView, controlPane);
 
-               
+                    // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
+                    Scene gameScene = new Scene(root, 960, 640);  // Increase the width here (960px for both components)
+                    primaryStage.setScene(gameScene);
+                    
+                    // Ensure the game starts
+                    System.out.println("Calling GameLogic.newGame()");
+                }
+                else {
+                    Game game = new Game(white, black);  
+                    Board board = game.getBoard();
+                    ChessBoardView boardView = new ChessBoardView(board, game);
+                    ControlPane controlPane = new ControlPane(isGamble);
+                    HBox root = new HBox(20);
+                    root.getChildren().addAll(boardView, controlPane);
+
+                    // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
+                    Scene gameScene = new Scene(root, 960, 640);  // Increase the width here (960px for both components)
+                    primaryStage.setScene(gameScene);
+                    
+                    // Ensure the game starts
+                    System.out.println("Calling GameLogic.newGame()");
+                }
+
+
+
+
             } else {
                 System.out.println("Please select a mode.");
             }

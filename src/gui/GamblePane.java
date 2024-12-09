@@ -64,21 +64,43 @@ public class GamblePane extends GridPane {
     /**
      * Returns an array of available pieces for the current player.
      */
-    private Piece[] getAvailablePiecesForCurrentPlayer() {
+    public Piece[] getAvailablePiecesForCurrentPlayer() {
         // Select the pieces based on the current player's color
         if (currentPlayerColor.equals("white")) {
             return new Piece[] {
                 new Queen("white", null),
                 new Rook("white", null),
+                new Rook("white", null),
                 new Bishop("white", null),
-                new Knight("white", null)
+                new Bishop("white", null),
+                new Knight("white", null),
+                new Knight("white", null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null),
+                new Pawn("white",null)
             };
         } else {
             return new Piece[] {
-                new Queen("black", null),
-                new Rook("black", null),
-                new Bishop("black", null),
-                new Knight("black", null)
+            		new Queen("black", null),
+                    new Rook("black", null),
+                    new Rook("black", null),
+                    new Bishop("black", null),
+                    new Bishop("black", null),
+                    new Knight("black", null),
+                    new Knight("black", null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null),
+                    new Pawn("black",null)
             };
         }
     }
