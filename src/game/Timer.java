@@ -47,5 +47,10 @@ public class Timer {
     public boolean isRunning() {
         return isRunning;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }
 

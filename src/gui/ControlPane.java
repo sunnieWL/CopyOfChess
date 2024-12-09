@@ -21,16 +21,13 @@ public class ControlPane extends VBox {
     public ControlPane() {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10);
-
-        // Initialize the timer panes and game status label
+   
         whiteTimerPane = new TimerPane(0);
         blackTimerPane = new TimerPane(1);
         gameStatusText = new Text("Game Started!");
 
-        // Add the timer panes and game status label to the control pane
         this.getChildren().addAll(whiteTimerPane, blackTimerPane, gameStatusText);
 
-        // Add buttons for promotion choices
         VBox promotionButtons = createPromotionButtons();
         this.getChildren().add(promotionButtons);
     }
@@ -44,8 +41,7 @@ public class ControlPane extends VBox {
         Button bishopButton = new Button("Promote to Bishop");
         Button knightButton = new Button("Promote to Knight");
 
-        // Set button actions
-        queenButton.setOnAction(e -> setPromotionPiece(new Queen("white", null)));  // Example: set color as "white"
+        queenButton.setOnAction(e -> setPromotionPiece(new Queen("white", null)));  
         rookButton.setOnAction(e -> setPromotionPiece(new Rook("white", null)));
         bishopButton.setOnAction(e -> setPromotionPiece(new Bishop("white", null)));
         knightButton.setOnAction(e -> setPromotionPiece(new Knight("white", null)));
@@ -71,7 +67,6 @@ public class ControlPane extends VBox {
         System.out.println("Selected promotion: " + piece.getClass().getSimpleName());
     }
 
-    // Method to retrieve the selected promoted piece
     public static Piece getPromotedPiece() {
         return promotedPiece;
     }

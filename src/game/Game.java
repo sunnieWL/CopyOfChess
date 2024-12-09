@@ -85,6 +85,7 @@ public class Game {
         try {
             Piece piece = board.getPieceAt(from);
             
+            
             if (isPinned(piece, board)) {
                 throw new IllegalArgumentException("This piece is pinned and cannot be moved.");
             } 
@@ -134,6 +135,8 @@ public class Game {
         }
     }
     
+    
+    
     private boolean isPinned(Piece piece, Board board) {
         King king = board.findKing(piece.getColor());
         if (king == null) return false;
@@ -177,12 +180,8 @@ public class Game {
         int y = opponentPiecePos.getY() + dy;
 
         while (x != kingPos.getX() || y != kingPos.getY()) {
-            if (board.getPieceAt(x, y) != null) {
-                if (board.getPieceAt(x, y).equals(piece)) {
-                    return true; 
-                } else {
-                    return false; 
-                }
+            if (board.getPieceAt(x, y) != null && !board.getPieceAt(x, y).equals(piece)) {
+                   return true;       
             }
             x += dx;
             y += dy;
@@ -295,6 +294,7 @@ public class Game {
         currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
         // You can add logic to start the timer for the new player here.
         startTimer(currentPlayer == whitePlayer ? 0 : 1);  // 0 for white, 1 for black
+        stopTimer(currentPlayer == whitePlayer ? 1 : 0);
     }
 
 }
