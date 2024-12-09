@@ -14,14 +14,14 @@ import pieces.Queen;
 import pieces.Rook;
 
 public class Game {
-    private Board board;
-    private static Player whitePlayer;
-    private static Player blackPlayer;
-    private static Player currentPlayer;
-    private boolean isGameOver;
-    private List<Move> moveHistory;
-    private Timer whiteTimer;
-    private Timer blackTimer;
+    protected Board board;
+    protected static Player whitePlayer;
+    protected static Player blackPlayer;
+    protected static Player currentPlayer;
+    protected boolean isGameOver;
+    protected List<Move> moveHistory;
+    protected Timer whiteTimer;
+    protected Timer blackTimer;
 
     public Game(Player whitePlayer, Player blackPlayer) {
         this.board = new Board();
