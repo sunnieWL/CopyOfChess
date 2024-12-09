@@ -35,4 +35,8 @@ public abstract class Piece implements Movable,Cloneable {
 
     @Override
     public abstract Piece clone();
+    
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

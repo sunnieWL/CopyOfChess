@@ -15,6 +15,7 @@ public class Pawn extends Piece {
         List<Position> validMoves = new ArrayList<>();
         int direction = color.equals("white") ? -1 : 1;
         int startRow = color.equals("white") ? 6 : 1;
+        int promotionRow = color.equals("white") ? 0 : 7;
 
         // Move 
         int newX = position.getX() + direction;
@@ -30,7 +31,7 @@ public class Pawn extends Piece {
             }
         }
 
-        // Captur
+        // Capture
         int[] dy = { -1, 1 };
         newX = position.getX() + direction;
         for (int deltaY : dy) {
@@ -42,8 +43,12 @@ public class Pawn extends Piece {
                 }
             }
         }
-
+        validMoves.removeIf(move -> move.getX() == promotionRow && !canPromote(move));
         return validMoves;
+    }
+    
+    public boolean canPromote(Position move) {
+        return move.getX() == (color.equals("white") ? 0 : 7);
     }
     
     @Override
@@ -55,6 +60,6 @@ public class Pawn extends Piece {
 
     @Override
     public String getSymbol() {
-        return color.equals("white") ? "♙" : "♟︎";
+        return color.equals("white") ? "♙" : "♟";
     }
 }

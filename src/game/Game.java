@@ -1,5 +1,10 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gui.ControlPane;
+import javafx.application.Platform;
 import model.Player;
 import model.Position;
 import pieces.Bishop;
@@ -8,14 +13,6 @@ import pieces.Piece;
 import pieces.Queen;
 import pieces.Rook;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import gui.ControlPane;
-import gui.TimerPane;
-import javafx.application.Platform;
-
-
 public class Game {
     private Board board;
     private Player whitePlayer;
@@ -23,13 +20,8 @@ public class Game {
     private Player currentPlayer;
     private boolean isGameOver;
     private List<Move> moveHistory;
-    private static boolean isGameStart;
-    private static Timer[] playerTimer= new Timer[] {new Timer(1, 0, 0), new Timer(1, 0, 0)};
-    // added 
-    private static TimerPane[] timerPane;
-    private volatile boolean[] timerThreadsRunning = new boolean[2];
-    private boolean timersStarted = false;
-    private static ControlPane controlPane;
+    private Timer whiteTimer;
+    private Timer blackTimer;
 
     public Game(Player whitePlayer, Player blackPlayer) {
         this.board = new Board();
@@ -38,9 +30,9 @@ public class Game {
         this.currentPlayer = whitePlayer; 
         this.isGameOver = false;
         this.moveHistory = new ArrayList<>();
-        
-        controlPane = new ControlPane();
-        initializeTimers(0, 1, 0);
+       
+        this.whiteTimer = new Timer(5, 0); // 5 minutes for example
+        this.blackTimer = new Timer(5, 0);
     }
 
     public Board getBoard() { return board; }
@@ -112,13 +104,7 @@ public class Game {
             move.execute(board);
             moveHistory.add(move);
             
-            if (!timersStarted) {
-                timersStarted = true;
-               
-                startCountDownTimer(0); // White's timer
-                startCountDownTimer(1); // Black's timer
-            }
-            
+           
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
                 
@@ -258,110 +244,57 @@ public class Game {
         return false;
     }
     
-    public void startCountDownTimer(int pl) {
-        synchronized (this) {
-               if (timerThreadsRunning[pl]) return;
-
-               timerThreadsRunning[pl] = true; 
-           }
-
-        if (!timersStarted) {
-            timersStarted = true;
-            startCountDownTimer(0); // White's timer
-            startCountDownTimer(1); // Black's timer
-            System.out.println("Timers started for both players");
-        }
-        new Thread(() -> {
-            try {
-                runCountDownTimer(pl);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-       
-       public void runCountDownTimer(int pl) throws InterruptedException {
-        
-        
-           Timer plTimer = playerTimer[pl];
-           plTimer.setStop(false);
-           timerThreadsRunning[pl] = true;
-
-
-           
-           while (Game.isGameStart && timerThreadsRunning[pl] && getCurrentPlayer() == (pl == 0 ? whitePlayer : blackPlayer) && !plTimer.isTimerEmpty()) {
-               Thread.sleep(100);  // Sleep for 1 second to simulate countdown
-               System.out.println("Current Timer: " + plTimer.toString());
-               Platform.runLater(() -> {
-                   if (timerPane[pl] != null) {
-                       timerPane[pl].setTimer(plTimer);
-                   }
-               }); 
-
-
-               plTimer.decrementTimer(1);  // Decrement by 1 second
-           }
-
-           plTimer.setStop(true);
-           if (plTimer.isTimerEmpty()) {
-               endGame(pl == 0 ? "Black wins!" : "White wins!");
-           }
-       }
-    
-       public void endGame(String message) {
-           isGameOver = true;
-           isGameStart = false;
-           
-
-           Platform.runLater(() -> controlPane.updateGameText(message));
-           for (int i = 0; i < timerThreadsRunning.length; i++) {
-               stopTimer(i);
-           }
-       }
-    
-       private void initializeTimers(int hours, int minutes, int seconds) {
-           playerTimer = new Timer[] {new Timer(hours, minutes, seconds), new Timer(hours, minutes, seconds)};
-           timerPane = new TimerPane[2];
-
-           for (int i = 0; i < 2; i++) {
-               timerPane[i] = new TimerPane(i);
-               timerPane[i].setTimer(playerTimer[i]);
-
-           }
-       }
-    public void stopTimer(int pl) {
-           timerThreadsRunning[pl] = false;
-    }
-    
-    public static Timer getPlayerTimer(int pl) {
-    	return playerTimer[pl];
-    }
-
-    public static void setTimerPane(int pl, TimerPane timerPane) {
-    	Game.timerPane[pl] = timerPane;
-    }
-    
-    public static ControlPane getControlPane() {
-    	return controlPane;
-    }
+ 
     
     
     public List<Piece> getAllPieces(String color) {
         return board.getAllPieces(color);
     }
     
+    public void startTimer(int playerIndex) {
+        Timer playerTimer = (playerIndex == 0) ? whiteTimer : blackTimer;
+
+        // Start the timer for the selected player
+        playerTimer.start();
+
+        new Thread(() -> {
+            try {
+                while (!playerTimer.isTimerEmpty() && playerTimer.isRunning()) {
+                    Thread.sleep(1000);  // Decrease timer by one second
+                    playerTimer.decrementTimer(1);
+
+                    // Update the GUI
+                    Platform.runLater(() -> {
+                        ControlPane.updateTimer(playerIndex, playerTimer);
+                    });
+                }
+                if (playerTimer.isTimerEmpty()) {
+                    endGame(playerIndex == 0 ? "Black wins!" : "White wins! Time out.");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    // Stop the timer for the current player
+    public void stopTimer(int playerIndex) {
+        Timer playerTimer = (playerIndex == 0) ? whiteTimer : blackTimer;
+        playerTimer.stop(); // Stop the respective player's timer
+    }
+
+    // Handle game end logic (e.g., timeout, checkmate, etc.)
+    private void endGame(String message) {
+        isGameOver = true;
+        System.out.println(message);
+        // Optionally update the GUI or handle other game-over procedures.
+    }
+
+    // Switch between players after each move (if needed)
     private void switchPlayer() {
         currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-        System.out.println("Switched player to: " + currentPlayer);
-
-        // Make sure the correct player's timer is active
-        if (currentPlayer == whitePlayer) {
-            stopTimer(1);  // Stop black's timer
-            startCountDownTimer(0);  // Start white's timer
-        } else {
-            stopTimer(0);  // Stop white's timer
-            startCountDownTimer(1);  // Start black's timer
-        }
+        // You can add logic to start the timer for the new player here.
+        startTimer(currentPlayer == whitePlayer ? 0 : 1);  // 0 for white, 1 for black
     }
 
 }

@@ -1,61 +1,51 @@
 package game;
 
 public class Timer {
-    private int minute;
+    private int hours;
+    private int minutes;
     private int seconds;
-    private int ms;
+    private boolean isRunning;
 
-    private boolean isStop;
-
-    public Timer(int m, int s, int ms) {
-        this.minute = m;
-        this.seconds = s;
-        this.ms = ms;
-
-        this.isStop = false;  // Default: Timer is running when initialized
+    public Timer(int minutes, int seconds) {
+        this.minutes = minutes;
+        this.seconds = seconds;
+        this.hours = 0;
+        this.isRunning = false;
     }
 
-    public void decrementTimer(int amount) {
-        // If the timer is stopped, do nothing
-        if(isStop) { 
-            return; 
-        }
+    public void start() {
+        isRunning = true;
+    }
 
-        if(isTimerEmpty()) {
-            return;
-        }
+    public void stop() {
+        isRunning = false;
+    }
 
-        ms -= amount;
+    public void decrementTimer(int secondsToDecrement) {
+        if (!isRunning) return;
 
-        while(ms < 0) {
-            if(isTimerEmpty()) {
-                ms = 0;
-                return;
-            }
-            ms += 100;  // Correct the milliseconds
-
-            seconds -= 1;
-            while(seconds < 0) {
-                seconds += 60;
-                minute -= 1;
-            }
+        int totalSeconds = (hours * 3600) + (minutes * 60) + seconds - secondsToDecrement;
+        if (totalSeconds <= 0) {
+            this.hours = 0;
+            this.minutes = 0;
+            this.seconds = 0;
+        } else {
+            this.hours = totalSeconds / 3600;
+            this.minutes = (totalSeconds % 3600) / 60;
+            this.seconds = totalSeconds % 60;
         }
     }
 
     public boolean isTimerEmpty() {
-        return minute <= 0 && seconds <= 0 && ms <= 0;
+        return hours == 0 && minutes == 0 && seconds == 0;
     }
 
-    public String toString() {
-        // Ensure proper formatting for minutes, seconds, and milliseconds
-        return String.format("%02d:%02d:%02d", minute, seconds, ms);
+    public String getTime() {
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    public boolean isStop() {
-        return isStop;
-    }
-
-    public void setStop(boolean isStop) {
-        this.isStop = isStop;
+    public boolean isRunning() {
+        return isRunning;
     }
 }
+

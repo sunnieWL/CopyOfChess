@@ -65,6 +65,9 @@ public class Board {
     public Piece getPieceAt(Position position) {
         return getPieceAt(position.getX(), position.getY());
     }
+    public void setPieceAt(Position position, Piece piece) {
+        grid[position.getX()][position.getY()] = piece;
+    }
 
     public boolean movePiece(Position from, Position to) {
         if (!isValidPosition(from.getX(), from.getY()) || !isValidPosition(to.getX(), to.getY())) {
