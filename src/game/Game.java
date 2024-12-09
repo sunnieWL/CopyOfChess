@@ -15,9 +15,9 @@ import pieces.Rook;
 
 public class Game {
     private Board board;
-    private Player whitePlayer;
-    private Player blackPlayer;
-    private Player currentPlayer;
+    private static Player whitePlayer;
+    private static Player blackPlayer;
+    private static Player currentPlayer;
     private boolean isGameOver;
     private List<Move> moveHistory;
     private Timer whiteTimer;
@@ -25,9 +25,9 @@ public class Game {
 
     public Game(Player whitePlayer, Player blackPlayer) {
         this.board = new Board();
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
-        this.currentPlayer = whitePlayer; 
+        Game.whitePlayer = whitePlayer;
+        Game.blackPlayer = blackPlayer;
+        Game.currentPlayer = whitePlayer; 
         this.isGameOver = false;
         this.moveHistory = new ArrayList<>();
        
@@ -36,7 +36,7 @@ public class Game {
     }
 
     public Board getBoard() { return board; }
-    public Player getCurrentPlayer() { return currentPlayer; }
+    public static Player getCurrentPlayer() { return currentPlayer; }
     public boolean isGameOver() { return isGameOver; }
 
     public boolean isCheckmate(Player player) {
@@ -85,7 +85,6 @@ public class Game {
         try {
             Piece piece = board.getPieceAt(from);
             
-            
             if (isPinned(piece, board)) {
                 throw new IllegalArgumentException("This piece is pinned and cannot be moved.");
             } 
@@ -124,7 +123,7 @@ public class Game {
             }
 
             if (!isGameOver) {
-            	
+             
                 switchPlayer();
             }
 
@@ -134,8 +133,6 @@ public class Game {
             System.out.println("An error occurred while making the move: " + e.getMessage());
         }
     }
-    
-    
     
     private boolean isPinned(Piece piece, Board board) {
         King king = board.findKing(piece.getColor());
@@ -161,12 +158,12 @@ public class Game {
         // same r or c
         if (opponentPiece instanceof Rook || opponentPiece instanceof Queen) {
             if (opponentPiecePos.getX() == kingPos.getX() || opponentPiecePos.getY() == kingPos.getY()) {
-            	return isPieceInPath(piece, opponentPiecePos, kingPos, board);
+             return isPieceInPath(piece, opponentPiecePos, kingPos, board);
             }
         }
         if (opponentPiece instanceof Bishop || opponentPiece instanceof Queen) {
             if (Math.abs(opponentPiecePos.getX() - kingPos.getX()) == Math.abs(opponentPiecePos.getY() - kingPos.getY())) {
-            	return isPieceInPath(piece, opponentPiecePos, kingPos, board);
+             return isPieceInPath(piece, opponentPiecePos, kingPos, board);
             }
         }
         return false;
@@ -180,8 +177,12 @@ public class Game {
         int y = opponentPiecePos.getY() + dy;
 
         while (x != kingPos.getX() || y != kingPos.getY()) {
-            if (board.getPieceAt(x, y) != null && !board.getPieceAt(x, y).equals(piece)) {
-                   return true;       
+            if (board.getPieceAt(x, y) != null) {
+                if (board.getPieceAt(x, y).equals(piece)) {
+                    return true; 
+                } else {
+                    return false; 
+                }
             }
             x += dx;
             y += dy;
@@ -288,13 +289,14 @@ public class Game {
         System.out.println(message);
         // Optionally update the GUI or handle other game-over procedures.
     }
-
-    // Switch between players after each move (if needed)
+    
     private void switchPlayer() {
         currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-        // You can add logic to start the timer for the new player here.
-        startTimer(currentPlayer == whitePlayer ? 0 : 1);  // 0 for white, 1 for black
+        String s = (currentPlayer == whitePlayer) ? "White" : "Black";
+        ControlPane.updateTurnIndicator(s);
+        startTimer(currentPlayer == whitePlayer ? 0 : 1);  
         stopTimer(currentPlayer == whitePlayer ? 1 : 0);
+        
     }
 
 }
