@@ -101,7 +101,7 @@ public class Game {
             }
 
             Move move;
-            if (piece instanceof King && Math.abs(to.getY() - from.getY()) == 2) {
+            if (piece instanceof King && ((to.getY() >=  from.getY())? to.getY() - from.getY() :from.getY() -to.getY() )   == 2) {
                 // Castling move
                 Rook rook;
                 Position rookFrom, rookTo;
@@ -182,7 +182,7 @@ public class Game {
             }
         }
         if (opponentPiece instanceof Bishop || opponentPiece instanceof Queen) {
-            if (Math.abs(opponentPiecePos.getX() - kingPos.getX()) == Math.abs(opponentPiecePos.getY() - kingPos.getY())) {
+        	 if ( ((opponentPiecePos.getX() >= kingPos.getX() )?   opponentPiecePos.getX() - kingPos.getX() : kingPos.getX() -  opponentPiecePos.getX())  ==  ((opponentPiecePos.getY() >= kingPos.getY())? opponentPiecePos.getY() - kingPos.getY(): kingPos.getY()- opponentPiecePos.getY() )) {
              return isPieceInPath(piece, opponentPiecePos, kingPos, board);
             }
         }

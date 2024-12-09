@@ -28,7 +28,7 @@ public class ControlPane extends VBox {
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
         
         if(isGamble) {
-            GamblePane gamblePane = new GamblePane();
+            GamblePane gamblePane = new GamblePane("White");
             gamblePane.setPrefWidth(400);  
             gamblePane.setPrefHeight(75);
             this.getChildren().add(gamblePane);
