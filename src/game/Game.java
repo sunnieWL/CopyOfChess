@@ -196,21 +196,20 @@ public class Game {
         int x = opponentPiecePos.getX() + dx;
         int y = opponentPiecePos.getY() + dy;
         
-        int blocker = 0;
+        boolean ans = false;
         
         while (x != kingPos.getX() || y != kingPos.getY()) {
             if (board.getPieceAt(x, y) != null) {
                 if (board.getPieceAt(x, y).equals(piece)) {
-                    blocker++; 
+                    ans = true; 
                 } else {
-                    blocker++; 
+                    return false; 
                 }
             }
             x += dx;
             y += dy;
         }
-        if(blocker == 1) return true;
-        return false; 
+        return ans; 
     }
     
     private boolean canRemoveCheck(Position from, Position to) {
