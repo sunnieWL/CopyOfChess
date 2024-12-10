@@ -101,6 +101,7 @@ public class Game {
             
             if (isPinned(piece, board)) {
             	controlPane.updateGameText("This piece is pinned.");
+            	playSound("illegal");
                 throw new IllegalArgumentException("This piece is pinned and cannot be moved.");
             } 
             
@@ -115,6 +116,7 @@ public class Game {
             List<Position> validMoves = piece.getValidMoves(board);
             if (!validMoves.contains(to)) {
             	controlPane.updateGameText("Invalid move.");
+            	playSound("illegal");
                 throw new IllegalArgumentException("Invalid move.");
             }
 
@@ -180,8 +182,7 @@ public class Game {
         	   }
            }
 
-            if (!isGameOver) {
-            	
+            if (!isGameOver) {      	
                 switchPlayer();
             }
 
