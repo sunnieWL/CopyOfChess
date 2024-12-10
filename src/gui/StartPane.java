@@ -60,7 +60,7 @@ public class StartPane extends VBox {
                 Player white = new Player("White", "white");
                 Player black = new Player("Black", "black");
                 
-                ControlPane controlPane = new ControlPane();
+                ControlPane controlPane = new ControlPane(primaryStage);
                     Game game = new Game(white, black,isGamble,controlPane);  
                     Board board = game.getBoard();
                     
@@ -80,7 +80,16 @@ public class StartPane extends VBox {
                 System.out.println("Please select a mode.");
             }
         });
-
-        this.getChildren().addAll(title, modeComboBox, startButton);
+        
+        Button quitButton = new Button("Quit");
+        quitButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px; -fx-background-color: #FF5555; -fx-text-fill: white;");
+        quitButton.setMinWidth(300);  
+        quitButton.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;");  
+        quitButton.setOnAction(e -> {
+            System.out.println("Exiting the game.");
+            primaryStage.close();  
+        });
+        
+        this.getChildren().addAll(title, modeComboBox, startButton,quitButton);
     }
 }

@@ -2,11 +2,13 @@ package gui;
 
 import game.Timer;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import pieces.Bishop;
 import pieces.Knight;
 import pieces.Piece;
@@ -21,7 +23,7 @@ public class ControlPane extends VBox {
     private static Piece promotedPiece;
     
     
-    public ControlPane() {
+    public ControlPane(Stage stage) {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10);
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
@@ -62,6 +64,25 @@ public class ControlPane extends VBox {
 
         VBox promotionButtons = createPromotionButtons();
         this.getChildren().add(promotionButtons);
+
+        Button backButton = new Button("Back to Main Page");
+        backButton.setStyle(
+            "-fx-font-size: 16px; " +
+            "-fx-text-fill: white; " +
+            "-fx-background-color: #444; " +
+            "-fx-border-radius: 5px; " +
+            "-fx-background-radius: 5px; " +
+            "-fx-padding: 10px;"
+        );
+
+        backButton.setOnAction(e -> {
+            // Switch to StartPane
+            StartPane startPane = new StartPane(stage);  // Assume you have a StartPane class
+            Scene startScene = new Scene(startPane, 800, 600);  // Adjust dimensions as needed
+            stage.setScene(startScene);
+        });
+
+        this.getChildren().add(backButton);
     }
 
     private VBox createPromotionButtons() {

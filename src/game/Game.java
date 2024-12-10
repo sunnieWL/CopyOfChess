@@ -1,20 +1,15 @@
 package game;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import gui.ChessBoardView;
 import gui.ControlPane;
 import gui.HistoryPane;
 import javafx.application.Platform;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import model.Player;
 import model.Position;
 import pieces.Bishop;
@@ -350,15 +345,37 @@ public class Game {
         return moveHistory;
     }
     
-    private void playSound(String Type) {
+    private void playSound(String type) {
         try {
-            File soundFile = new File("res/"+Type+".wav");  
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            System.err.println("Error playing check sound: " + e.getMessage());
+            String resourcePath = "/" + type + ".wav"; 
+            java.net.URL resource = getClass().getResource(resourcePath);
+
+            if (resource == null) {
+                System.err.println("Sound file not found: " + resourcePath);
+                return;
+            }
+
+            File tempFile = File.createTempFile(type, ".wav");
+            tempFile.deleteOnExit(); 
+
+            try (java.io.InputStream inputStream = resource.openStream();
+                 java.io.FileOutputStream outputStream = new java.io.FileOutputStream(tempFile)) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+
+            Media sound = new Media(tempFile.toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
+
+        } catch (Exception e) {
+            System.err.println("Error playing sound: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 }
