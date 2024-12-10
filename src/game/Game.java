@@ -21,10 +21,10 @@ public class Game {
     private static Player whitePlayer;
     private static Player blackPlayer;
     private static Player currentPlayer;
-    private boolean isGameOver;
+    private static boolean isGameOver;
     private static List<Move> moveHistory;
-    private Timer whiteTimer;
-    private Timer blackTimer;
+    private static Timer whiteTimer;
+    private static Timer blackTimer;
     private ControlPane controlPane;
     
     public Game(Player whitePlayer, Player blackPlayer, Boolean isGamble, ControlPane controlPane) {
@@ -33,11 +33,11 @@ public class Game {
         Game.blackPlayer = blackPlayer;
         Game.currentPlayer = whitePlayer; 
         this.controlPane = controlPane;
-        this.isGameOver = false;
+        isGameOver = false;
         moveHistory = new ArrayList<>();
        
-        this.whiteTimer = new Timer(5, 0); // 5 minutes for example
-        this.blackTimer = new Timer(5, 0);
+        whiteTimer = new Timer(5, 0); // 5 minutes for example
+        blackTimer = new Timer(5, 0);
     }
 
     public Board getBoard() { return board; }
@@ -62,8 +62,8 @@ public class Game {
         }
         return true; 
     }
-
-    private boolean isInCheckAfterMove(String playerColor, Board tempBoard) {
+    
+    public boolean isInCheckAfterMove(String playerColor, Board tempBoard) {
         King king = tempBoard.findKing(playerColor);
         if (king == null) {
             return true; 
@@ -181,7 +181,7 @@ public class Game {
         }
     }
     
-    private boolean isPinned(Piece piece, Board board,Position targetPos) {
+    public boolean isPinned(Piece piece, Board board,Position targetPos) {
         King king = board.findKing(piece.getColor());
         if (king == null) return false; 
 
@@ -198,13 +198,13 @@ public class Game {
         return isInCheckAfterMove(piece.getColor(), tempBoard);
     }
 
-    private boolean isAligned(Position pos1, Position pos2) {
+    public boolean isAligned(Position pos1, Position pos2) {
         return pos1.getX() == pos2.getX() || // Same row
                pos1.getY() == pos2.getY() || // Same column
                Math.abs(pos1.getX() - pos2.getX()) == Math.abs(pos1.getY() - pos2.getY()); // Same diagonal
     }
 
-    private boolean canRemoveCheck(Position from, Position to) {
+    public boolean canRemoveCheck(Position from, Position to) {
         Piece piece = board.getPieceAt(from);
         if (piece == null) return false;
 
@@ -263,7 +263,7 @@ public class Game {
         Timer playerTimer = (playerIndex == 0) ? whiteTimer : blackTimer;
         playerTimer.start();
         
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 while (!playerTimer.isTimerEmpty() && playerTimer.isRunning()) {
                     Thread.sleep(1000);  
@@ -279,7 +279,8 @@ public class Game {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        thread.start();
     }
 
     public void stopTimer(int playerIndex) {
@@ -287,7 +288,7 @@ public class Game {
         playerTimer.stop(); 
     }
 
-    private void endGame(String message) {
+    public static void endGame(String message) {
         isGameOver = true;
         System.out.println(message);
     }
@@ -336,4 +337,15 @@ public class Game {
             e.printStackTrace();
         }
     }
+
+	public static Timer getWhiteTimer() {
+		return whiteTimer;
+	}
+
+	public static Timer getBlackTimer() {
+		return blackTimer;
+	}
+    
+    
+    
 }

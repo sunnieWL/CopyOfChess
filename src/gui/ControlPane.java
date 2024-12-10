@@ -1,5 +1,6 @@
 package gui;
 
+import game.Game;
 import game.Timer;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -76,7 +77,9 @@ public class ControlPane extends VBox {
         );
 
         backButton.setOnAction(e -> {
-        	this.getChildren().clear();
+        	Game.endGame("Back to the main Page");
+        	Game.getWhiteTimer().stop();
+        	Game.getBlackTimer().stop();
             StartPane startPane = new StartPane(stage);  
             Scene startScene = new Scene(startPane, 800, 600);  
             stage.setScene(startScene);
