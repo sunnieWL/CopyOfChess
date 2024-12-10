@@ -1,7 +1,15 @@
 package game;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import gui.ControlPane;
 import gui.HistoryPane;
@@ -82,6 +90,8 @@ public class Game {
 
     public void makeMove(Position from, Position to) {
         if (isGameOver) {
+        	stopTimer(0);
+        	stopTimer(1);
             System.out.println("The game is over. No more moves can be made.");
             return;
         }
@@ -108,6 +118,11 @@ public class Game {
                 throw new IllegalArgumentException("Invalid move.");
             }
 
+            Piece capturedPiece = board.getPieceAt(to);
+            if (capturedPiece != null) {
+                playSound("Capture");  // Play capture sound
+            }
+            
             Move move;
             if (piece instanceof King && ((to.getY() >=  from.getY())? to.getY() - from.getY() :from.getY() -to.getY() )   == 2) {
                 // Castling move
@@ -137,10 +152,12 @@ public class Game {
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
+            	playSound("Check");
             	controlPane.updateGameText("Your king is in check");
                 System.out.println(opponent.getName() + " is in check!");
 
                 if (isCheckmate(opponent)) {
+                	playSound("GameOver");
                     isGameOver = true;
                     controlPane.updateGameText("Checkmate! " + currentPlayer.getName() + " wins!");
                     System.out.println("Checkmate! " + currentPlayer.getName() + " wins!");
@@ -148,14 +165,23 @@ public class Game {
             } else {
                
                 if (isStalemate(opponent)) {
+                	playSound("GameOver");
                     isGameOver = true;
                     controlPane.updateGameText("Stalemate! The game is a draw.");
                     System.out.println("Stalemate! The game is a draw.");
                 }
             }
+            
+           if(!isInCheck(opponent) && !isStalemate(opponent) && capturedPiece == null) {
+        	   if(move instanceof CastlingMove) {
+        		   playSound("Castling");
+        	   } else {
+        		   playSound("Move");
+        	   }
+           }
 
             if (!isGameOver) {
-             
+            	
                 switchPlayer();
             }
 
@@ -335,5 +361,18 @@ public class Game {
 
     public static List<Move> getMoveHistory() {
         return moveHistory;
+    }
+    
+    private void playSound(String Type) {
+        try {
+            // Load the audio file
+            File soundFile = new File("res/"+Type+".wav");  // Adjust path as necessary
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();  // Play the sound
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.err.println("Error playing check sound: " + e.getMessage());
+        }
     }
 }

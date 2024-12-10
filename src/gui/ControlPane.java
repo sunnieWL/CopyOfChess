@@ -93,7 +93,10 @@ public class ControlPane extends VBox {
         Button bishopButton = createStyledButton("Promote to Bishop");
         Button knightButton = createStyledButton("Promote to Knight");
 
-        // Highlight selected button
+        // Initial condition: Set the queen button as green by default
+        highlightButton(queenButton, rookButton, bishopButton, knightButton);
+
+        // Button actions
         queenButton.setOnAction(e -> {
             setPromotionPiece(new Queen("white", null));
             highlightButton(queenButton, rookButton, bishopButton, knightButton);
@@ -125,22 +128,34 @@ public class ControlPane extends VBox {
             "-fx-background-radius: 5px; " +
             "-fx-padding: 10px;"
         );
-        button.setOnMouseEntered(e -> button.setStyle(
-            "-fx-font-size: 16px; " +
-            "-fx-text-fill: white; " +
-            "-fx-background-color: #666; " +
-            "-fx-border-radius: 5px; " +
-            "-fx-background-radius: 5px; " +
-            "-fx-padding: 10px;"
-        ));
-        button.setOnMouseExited(e -> button.setStyle(
-            "-fx-font-size: 16px; " +
-            "-fx-text-fill: white; " +
-            "-fx-background-color: #555; " +
-            "-fx-border-radius: 5px; " +
-            "-fx-background-radius: 5px; " +
-            "-fx-padding: 10px;"
-        ));
+
+        // Set hover effect for non-selected buttons
+        button.setOnMouseEntered(e -> {
+            if (!button.getStyle().contains("#00AA00")) {  // Check if button is not selected (green)
+                button.setStyle(
+                    "-fx-font-size: 16px; " +
+                    "-fx-text-fill: white; " +
+                    "-fx-background-color: #666; " +
+                    "-fx-border-radius: 5px; " +
+                    "-fx-background-radius: 5px; " +
+                    "-fx-padding: 10px;"
+                );
+            }
+        });
+
+        button.setOnMouseExited(e -> {
+            if (!button.getStyle().contains("#00AA00")) {  // Check if button is not selected (green)
+                button.setStyle(
+                    "-fx-font-size: 16px; " +
+                    "-fx-text-fill: white; " +
+                    "-fx-background-color: #555; " +
+                    "-fx-border-radius: 5px; " +
+                    "-fx-background-radius: 5px; " +
+                    "-fx-padding: 10px;"
+                );
+            }
+        });
+
         return button;
     }
 
@@ -188,7 +203,7 @@ public class ControlPane extends VBox {
     public void updateGameStatusText(String message) {
         gameStatusText.setText(message);
         if(message != "Moved.") {
-        	gameStatusText.setFill(Color.RED);
+         gameStatusText.setFill(Color.RED);
         }
     }
     
