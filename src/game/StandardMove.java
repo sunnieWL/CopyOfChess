@@ -3,7 +3,6 @@ package game;
 import pieces.Pawn;
 import pieces.Piece;
 import pieces.Queen;
-import game.Board;
 import gui.ControlPane;
 import model.Position;
 

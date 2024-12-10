@@ -8,12 +8,6 @@ public class PawnView extends PieceView {
     }
 
     @Override
-	public void draw() {
-		// TODO Auto-generated method stub
-		
-	}
-
-    @Override
     public void update() {
         super.update();
     }

@@ -4,12 +4,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.input.MouseEvent;
-import javafx.event.EventHandler;
-import javafx.application.Platform;
 import game.Board;
 import game.Game;
-import game.Move;
 import interfaces.Drawable;
 import model.Player;
 import model.Position;
@@ -27,14 +23,14 @@ public class ChessBoardView extends GridPane {
     private PieceView[][] pieceViews = new PieceView[8][8];
     private List<Drawable> drawables = new ArrayList<>();
     private List<Rectangle> highlightedTiles = new ArrayList<>();
-    private static King king;
+    private static King checkedKing;
 
     public ChessBoardView(Board board, Game game) {
         this.board = board;
         this.game = game;
         drawBoard();
         drawPieces();
-        ChessBoardView.king = null;
+        setCheckedKing(null);
     }
 
     private void drawBoard() {
@@ -79,7 +75,7 @@ public class ChessBoardView extends GridPane {
                     add(pieceView.getText(), j + 1, i + 1);
 
                     drawables.add(pieceView);
-                    pieceView.draw();
+                
                 }
             }
         }
@@ -118,13 +114,12 @@ public class ChessBoardView extends GridPane {
         clearPieces();
         drawables.clear();
         drawPieces();
-        highlightKingWhenCheck(ChessBoardView.king); 
+        highlightKingWhenCheck(ChessBoardView.checkedKing); 
     }
 
     private void handleTileClick(int x, int y) {
-        Player currentPlayer = game.getCurrentPlayer();
         Piece clickedPiece = board.getPieceAt(x, y);
-
+        Player currentPlayer = game.getCurrentPlayer();
         if (selectedPosition == null) {
             if (clickedPiece != null && clickedPiece.getColor().equals(currentPlayer.getColor())) {
                 selectedPosition = new Position(x, y);
@@ -177,11 +172,11 @@ public class ChessBoardView extends GridPane {
         highlightedTiles.clear();
     }
 
-    public King getKing() {
-        return king;
+    public King getCheckedKing() {
+        return checkedKing;
     }
 
-    public static void setCheckKing(King king) {
-        ChessBoardView.king = king;
+    public static void setCheckedKing(King checkedKing) {
+        ChessBoardView.checkedKing = checkedKing;
     }
 }

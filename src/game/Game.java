@@ -42,14 +42,14 @@ public class Game {
         Game.currentPlayer = whitePlayer; 
         this.controlPane = controlPane;
         this.isGameOver = false;
-        this.moveHistory = new ArrayList<>();
+        moveHistory = new ArrayList<>();
        
         this.whiteTimer = new Timer(5, 0); // 5 minutes for example
         this.blackTimer = new Timer(5, 0);
     }
 
     public Board getBoard() { return board; }
-    public static Player getCurrentPlayer() { return currentPlayer; }
+    public Player getCurrentPlayer() { return currentPlayer; }
     public boolean isGameOver() { return isGameOver; }
 
     public boolean isCheckmate(Player player) {
@@ -123,7 +123,7 @@ public class Game {
 
             Piece capturedPiece = board.getPieceAt(to);
             if (capturedPiece != null) {
-                playSound("Capture");  // Play capture sound
+                playSound("Capture");  
             }
             
             Move move;
@@ -132,18 +132,15 @@ public class Game {
                 Rook rook;
                 Position rookFrom, rookTo;
                 if (to.getY() > from.getY()) {
-                    // Kingside
                     rookFrom = new Position(from.getX(), 7);
                     rookTo = new Position(from.getX(), 5);
                 } else {
-                    // Queenside
                     rookFrom = new Position(from.getX(), 0);
                     rookTo = new Position(from.getX(), 3);
                 }
                 rook = (Rook) board.getPieceAt(rookFrom);
                 move = new CastlingMove((King) piece, rook, from, to, rookFrom, rookTo);
             } else {
-                // Standard move
                 move = new StandardMove(piece, from, to);
             }
             
@@ -155,7 +152,7 @@ public class Game {
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
-            	ChessBoardView.setCheckKing(board.findKing(opponent.getColor()));
+            	ChessBoardView.setCheckedKing(board.findKing(opponent.getColor()));
             	playSound("Check");
             	controlPane.updateGameText("Your king is in check");
                 System.out.println(opponent.getName() + " is in check!");
@@ -215,7 +212,6 @@ public class Game {
     
     private boolean isPiecePinningKing(Piece opponentPiece, Piece piece, Position kingPos, Board board) {
         Position opponentPiecePos = opponentPiece.getPosition();
-        
         // same r or c
         if (opponentPiece instanceof Rook || opponentPiece instanceof Queen) {
             if (opponentPiecePos.getX() == kingPos.getX() || opponentPiecePos.getY() == kingPos.getY()) {
@@ -266,8 +262,6 @@ public class Game {
         return !isInCheckAfterMove(currentPlayer, tempBoard);
     }
     
-    
-
     public boolean isStalemate(Player player) {
         if (isInCheck(player)) {
             return false;
@@ -306,27 +300,21 @@ public class Game {
         }
         return false;
     }
-    
- 
-    
-    
+
     public List<Piece> getAllPieces(String color) {
         return board.getAllPieces(color);
     }
     
     public void startTimer(int playerIndex) {
         Timer playerTimer = (playerIndex == 0) ? whiteTimer : blackTimer;
-
-        // Start the timer for the selected player
         playerTimer.start();
-
+        
         new Thread(() -> {
             try {
                 while (!playerTimer.isTimerEmpty() && playerTimer.isRunning()) {
-                    Thread.sleep(1000);  // Decrease timer by one second
+                    Thread.sleep(1000);  
                     playerTimer.decrementTimer(1);
-
-                    // Update the GUI
+                    
                     Platform.runLater(() -> {
                         ControlPane.updateTimer(playerIndex, playerTimer);
                     });
@@ -340,17 +328,14 @@ public class Game {
         }).start();
     }
 
-    // Stop the timer for the current player
     public void stopTimer(int playerIndex) {
         Timer playerTimer = (playerIndex == 0) ? whiteTimer : blackTimer;
-        playerTimer.stop(); // Stop the respective player's timer
+        playerTimer.stop(); 
     }
 
-    // Handle game end logic (e.g., timeout, checkmate, etc.)
     private void endGame(String message) {
         isGameOver = true;
         System.out.println(message);
-        // Optionally update the GUI or handle other game-over procedures.
     }
     
     private void switchPlayer() {
@@ -368,12 +353,11 @@ public class Game {
     
     private void playSound(String Type) {
         try {
-            // Load the audio file
-            File soundFile = new File("res/"+Type+".wav");  // Adjust path as necessary
+            File soundFile = new File("res/"+Type+".wav");  
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
-            clip.start();  // Play the sound
+            clip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             System.err.println("Error playing check sound: " + e.getMessage());
         }

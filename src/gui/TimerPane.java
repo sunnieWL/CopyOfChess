@@ -8,11 +8,9 @@ import javafx.scene.paint.Color;
 
 public class TimerPane extends VBox {
     private Text timerText;
-    private int playerIndex;
     
     public TimerPane(int playerIndex) {
-        this.playerIndex = playerIndex;
-
+    	
         timerText = new Text("00:00:00");
         
         timerText.setFont(new Font("Arial", 20)); 

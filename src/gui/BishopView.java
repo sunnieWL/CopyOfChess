@@ -10,13 +10,6 @@ public class BishopView extends PieceView {
     @Override
     public void update() {
         super.update();
-    }
-
-	@Override
-	public void draw() {
-		// TODO Auto-generated method stub
-		
-	}
-	
+    }	
 	
 }
