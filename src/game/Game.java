@@ -148,6 +148,8 @@ public class Game {
 
                 if (isCheckmate(opponent)) {
                     playSound("GameOver");
+                    stopTimer(0);
+                    stopTimer(1);
                     isGameOver = true;
                     controlPane.updateGameText("Checkmate! " + currentPlayer.getName() + " wins!");
                     System.out.println("Checkmate! " + currentPlayer.getName() + " wins!");
@@ -156,6 +158,8 @@ public class Game {
                
                 if (isStalemate(opponent)) {
                     playSound("GameOver");
+                    stopTimer(0);
+                    stopTimer(1);
                     isGameOver = true;
                     controlPane.updateGameText("Stalemate! The game is a draw.");
                     System.out.println("Stalemate! The game is a draw.");
