@@ -214,10 +214,13 @@ public class Board {
         return newBoard;
     }
     
-    public boolean isSquareUnderAttack(Position pos, String defendingColor) {
+    public boolean isSquareUnderAttack(Position pos, String defendingColor, boolean checkKingMove) {
         String opponentColor = defendingColor.equals("white") ? "black" : "white";
         List<Piece> opponentPieces = getAllPieces(opponentColor);
         for (Piece piece : opponentPieces) {
+            if (checkKingMove && piece instanceof King) {
+                continue;
+            }
             List<Position> moves = piece.getValidMoves(this);
             if (moves.contains(pos)) {
                 return true;

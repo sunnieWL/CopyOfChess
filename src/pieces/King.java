@@ -52,7 +52,7 @@ public class King extends Piece {
         }
         for (int y = position.getY(); y <= position.getY() + 2; y++) {
             Position pos = new Position(row, y);
-            if (board.isSquareUnderAttack(pos, this.color)) {
+            if (board.isSquareUnderAttack(pos, this.color, true)) {
                 return false;
             }
         }
@@ -73,7 +73,7 @@ public class King extends Piece {
         // check attacking square
         for (int y = position.getY(); y >= position.getY() - 2; y--) {
             Position pos = new Position(row, y);
-            if (board.isSquareUnderAttack(pos, this.color)) {
+            if (board.isSquareUnderAttack(pos, this.color, true)) {
                 return false;
             }
         }
