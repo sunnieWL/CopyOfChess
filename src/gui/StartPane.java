@@ -13,7 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import game.Game;
 import game.Board;
-import game.GambleGame;
+
 import model.Player;
 import gui.ChessBoardView;
 
@@ -63,22 +63,7 @@ public class StartPane extends VBox {
                 Player white = new Player("White", "white", null);
                 Player black = new Player("Black", "black", null);
                 
-                if(isGamble) {
-                    GambleGame game = new GambleGame(white, black);
-                    Board board = game.getBoard();
-                    ChessBoardView boardView = new ChessBoardView(board, game);
-                    ControlPane controlPane = new ControlPane(isGamble);
-                    HBox root = new HBox(20);
-                    root.getChildren().addAll(boardView, controlPane);
-
-                    // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
-                    Scene gameScene = new Scene(root, 960, 640);  // Increase the width here (960px for both components)
-                    primaryStage.setScene(gameScene);
-                    
-                    // Ensure the game starts
-                    System.out.println("Calling GameLogic.newGame()");
-                }
-                else {
+               
                     Game game = new Game(white, black);  
                     Board board = game.getBoard();
                     ChessBoardView boardView = new ChessBoardView(board, game);
@@ -92,7 +77,7 @@ public class StartPane extends VBox {
                     
                     // Ensure the game starts
                     System.out.println("Calling GameLogic.newGame()");
-                }
+                
 
 
 

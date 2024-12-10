@@ -21,18 +21,18 @@ public class ControlPane extends VBox {
     private Text gameStatusText;
     private static Text turnIndicatorText; // To indicate whose turn it is
     private static Piece promotedPiece;
-
+    
+    
     public ControlPane(boolean isGamble) {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(20);
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
         
-        if(isGamble) {
-            GamblePane gamblePane = new GamblePane("White");
-            gamblePane.setPrefWidth(400);  
-            gamblePane.setPrefHeight(75);
-            this.getChildren().add(gamblePane);
-           }
+        
+        HistoryPane historyPane = new HistoryPane();
+        historyPane.setPrefWidth(400);
+        historyPane.setPrefHeight(2000);
+        this.getChildren().add(historyPane);
         
         // Initialize timer panes with enhanced styles
         whiteTimerPane = new TimerPane(0);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gui.ControlPane;
+import gui.HistoryPane;
 import javafx.application.Platform;
 import model.Player;
 import model.Position;
@@ -19,7 +20,7 @@ public class Game {
     protected static Player blackPlayer;
     protected static Player currentPlayer;
     protected boolean isGameOver;
-    protected List<Move> moveHistory;
+    protected static List<Move> moveHistory;
     protected Timer whiteTimer;
     protected Timer blackTimer;
 
@@ -124,6 +125,7 @@ public class Game {
             move.execute(board);
             moveHistory.add(move);
             
+            HistoryPane.updateHistory();
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
@@ -321,4 +323,7 @@ public class Game {
         
     }
 
+    public static List<Move> getMoveHistory() {
+        return moveHistory;
+    }
 }
