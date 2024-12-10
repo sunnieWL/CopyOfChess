@@ -1,8 +1,8 @@
 package model;
 
 public class Player {
-    protected String name;
-    protected String color; 
+    private String name;
+    private String color; 
 
     public Player(String name, String color) {
         this.name = name;

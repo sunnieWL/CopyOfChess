@@ -5,8 +5,8 @@ import pieces.Piece;
 import javafx.scene.text.Text;
 
 public abstract class PieceView implements Drawable {
-    protected Piece piece;
-    protected Text text;
+    private Piece piece;
+    private Text text;
 
     public PieceView(Piece piece) {
         this.piece = piece;
