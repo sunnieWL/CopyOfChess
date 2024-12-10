@@ -15,43 +15,40 @@ import game.Game;
 import game.Board;
 
 import model.Player;
-import gui.ChessBoardView;
 
 public class StartPane extends VBox {
 
     public StartPane(Stage primaryStage) {
         // Set a background color for the pane
-        this.setStyle("-fx-background-color: #f0f8ff;");  // Light blue background
-        this.setSpacing(20);  // Set spacing between components
-        this.setAlignment(Pos.CENTER);  // Center the components in the VBox
-        this.setPadding(new javafx.geometry.Insets(60)); // Padding around the pane
+        this.setStyle("-fx-background-color: #f0f8ff;");  
+        this.setSpacing(20);  
+        this.setAlignment(Pos.CENTER);  
+        this.setPadding(new javafx.geometry.Insets(60)); 
 
-        // Set preferred width and height for the StartPane
-        this.setPrefWidth(800);  // Increase width for a larger StartPane
-        this.setPrefHeight(600);  // Increase height for a larger StartPane
+        this.setPrefWidth(800);  
+        this.setPrefHeight(600);  
 
-        // Make VBox fill the entire width and height of its container
-        this.setFillWidth(true);  // Ensures VBox stretches to fill the width of the parent
+        this.setFillWidth(true); 
 
-        // Title text
+        // Title 
         Text title = new Text("Welcome to Chess v2!");
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 36));  // Increase title font size
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 36));  
         title.setFill(Color.DARKBLUE);
 
         // ComboBox for selecting game mode
         ComboBox<String> modeComboBox = new ComboBox<>();
-        modeComboBox.getItems().addAll("Classic" , "Gamble"); // Example modes
+        modeComboBox.getItems().addAll("Classic" , "Gamble");
         modeComboBox.setPromptText("Select Game Mode");
         modeComboBox.setStyle("-fx-font-size: 20px; -fx-padding: 15px; -fx-background-color: #ffffff;");
-        modeComboBox.setPrefWidth(300);  // Set preferred width for ComboBox
+        modeComboBox.setPrefWidth(300); 
 
-        // Button to start the game
+        // Start Button
         Button startButton = new Button("Start");
         startButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
-        startButton.setMinWidth(300);  // Set a minimum width for the button
-        startButton.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;");  // Rounded corners for the button
+        startButton.setMinWidth(300);  
+        startButton.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px;");  
 
-        // Set the action for the start button
+        // Set the action
         startButton.setOnAction(e -> {
             String selectedMode = modeComboBox.getValue();
             if (selectedMode != null) {
@@ -60,36 +57,30 @@ public class StartPane extends VBox {
                 boolean isGamble = selectedMode.equals("Gamble");
                 
                 
-                Player white = new Player("White", "white", null);
-                Player black = new Player("Black", "black", null);
+                Player white = new Player("White", "white");
+                Player black = new Player("Black", "black");
                 
                 ControlPane controlPane = new ControlPane();
                     Game game = new Game(white, black,isGamble,controlPane);  
                     Board board = game.getBoard();
                     
-//                    board.setBoardSetup(isGamble);
                     ChessBoardView boardView = new ChessBoardView(board, game);
                     
                     HBox root = new HBox(20);
                     root.getChildren().addAll(boardView, controlPane);
 
-                    // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
-                    Scene gameScene = new Scene(root, 960, 660);  // Increase the width here (960px for both components)
+                    Scene gameScene = new Scene(root, 960, 660);
                     primaryStage.setScene(gameScene);
                     
-                    // Ensure the game starts
-                    System.out.println("Calling GameLogic.newGame()");
-                
-
-
-
+                    // Debugging
+                    System.out.println("Game is Started");
 
             } else {
+            	// notify player
                 System.out.println("Please select a mode.");
             }
         });
 
-        // Add the components to the start pane
         this.getChildren().addAll(title, modeComboBox, startButton);
     }
 }

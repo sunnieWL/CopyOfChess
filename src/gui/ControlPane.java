@@ -3,8 +3,6 @@ package gui;
 import game.Timer;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,7 +17,7 @@ public class ControlPane extends VBox {
     private static TimerPane whiteTimerPane;
     private static TimerPane blackTimerPane;
     private Text gameStatusText;
-    private static Text turnIndicatorText; // To indicate whose turn it is
+    private static Text turnIndicatorText; 
     private static Piece promotedPiece;
     
     
@@ -28,18 +26,17 @@ public class ControlPane extends VBox {
         this.setSpacing(10);
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
         
-        
+        // history pane
         HistoryPane historyPane = new HistoryPane();
         historyPane.setPrefWidth(400);
         historyPane.setPrefHeight(2000);
         historyPane.setStyle("-fx-padding: 10px; -fx-background-color: #1E1E1E; -fx-border-radius: 10px; -fx-background-radius: 10px;");
         this.getChildren().add(historyPane);
         
-        // Initialize timer panes with enhanced styles
         whiteTimerPane = new TimerPane(0);
         blackTimerPane = new TimerPane(1);
         
-        // Create Text labels for "White Time" and "Black Time"
+        // white and black text label
         Text whiteTimeLabel = new Text("White Time");
         whiteTimeLabel.setFont(new Font("Arial", 18));
         whiteTimeLabel.setFill(Color.WHITE);
@@ -47,36 +44,24 @@ public class ControlPane extends VBox {
         Text blackTimeLabel = new Text("Black Time");
         blackTimeLabel.setFont(new Font("Arial", 18));
         blackTimeLabel.setFill(Color.WHITE);
-
-        // Game Status Text
+        
+        // GameStatus Text
         gameStatusText = new Text("Game Started!");
         gameStatusText.setFont(new Font("Arial", 24));
         gameStatusText.setFill(Color.LIGHTGREEN);
 
-        // Turn Indicator Text
         turnIndicatorText = new Text("White's Turn");
         turnIndicatorText.setFont(new Font("Arial", 20));
         turnIndicatorText.setFill(Color.LIGHTBLUE);
 
-        // Add components to the pane
         this.getChildren().addAll(
-            whiteTimeLabel, whiteTimerPane, // Add White Time Label and Timer
-            blackTimeLabel, blackTimerPane, // Add Black Time Label and Timer
+            whiteTimeLabel, whiteTimerPane, 
+            blackTimeLabel, blackTimerPane, 
             gameStatusText, turnIndicatorText
         );
 
-        // Promotion Buttons
         VBox promotionButtons = createPromotionButtons();
         this.getChildren().add(promotionButtons);
-    }
-
-    
-    private void styleTimerPane(TimerPane timerPane) {
-        timerPane.setScaleX(1.5);
-        timerPane.setScaleY(1.5);
-        timerPane.setStyle(
-            "-fx-background-color: #3A3A3A; -fx-border-color: #666; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 10px;"
-        );
     }
 
     private VBox createPromotionButtons() {
@@ -93,10 +78,8 @@ public class ControlPane extends VBox {
         Button bishopButton = createStyledButton("Promote to Bishop");
         Button knightButton = createStyledButton("Promote to Knight");
 
-        // Initial condition: Set the queen button as green by default
         highlightButton(queenButton, rookButton, bishopButton, knightButton);
 
-        // Button actions
         queenButton.setOnAction(e -> {
             setPromotionPiece(new Queen("white", null));
             highlightButton(queenButton, rookButton, bishopButton, knightButton);
@@ -129,9 +112,9 @@ public class ControlPane extends VBox {
             "-fx-padding: 10px;"
         );
 
-        // Set hover effect for non-selected buttons
+        // Set hover for not Green
         button.setOnMouseEntered(e -> {
-            if (!button.getStyle().contains("#00AA00")) {  // Check if button is not selected (green)
+            if (!button.getStyle().contains("#00AA00")) { // Check Green Button
                 button.setStyle(
                     "-fx-font-size: 16px; " +
                     "-fx-text-fill: white; " +
@@ -144,7 +127,7 @@ public class ControlPane extends VBox {
         });
 
         button.setOnMouseExited(e -> {
-            if (!button.getStyle().contains("#00AA00")) {  // Check if button is not selected (green)
+            if (!button.getStyle().contains("#00AA00")) {  // Check Green Button
                 button.setStyle(
                     "-fx-font-size: 16px; " +
                     "-fx-text-fill: white; " +
@@ -160,17 +143,17 @@ public class ControlPane extends VBox {
     }
 
     private void highlightButton(Button selected, Button... others) {
-        // Highlight the selected button
+        // Highlight button
         selected.setStyle(
             "-fx-font-size: 16px; " +
             "-fx-text-fill: white; " +
-            "-fx-background-color: #00AA00; " + // Highlight color
+            "-fx-background-color: #00AA00; " + 
             "-fx-border-radius: 5px; " +
             "-fx-background-radius: 5px; " +
             "-fx-padding: 10px;"
         );
 
-        // Reset styles for other buttons
+        // Reset styles 
         for (Button button : others) {
             button.setStyle(
                 "-fx-font-size: 16px; " +
@@ -208,7 +191,7 @@ public class ControlPane extends VBox {
     }
     
     private void setPromotionPiece(Piece piece) {
-        this.promotedPiece = piece;
+        promotedPiece = piece;
         System.out.println("Selected promotion: " + piece.getClass().getSimpleName());
     }
 
