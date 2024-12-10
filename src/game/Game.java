@@ -11,6 +11,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import gui.ChessBoardView;
 import gui.ControlPane;
 import gui.HistoryPane;
 import javafx.application.Platform;
@@ -154,6 +155,7 @@ public class Game {
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
+            	ChessBoardView.setCheckKing(board.findKing(opponent.getColor()));
             	playSound("Check");
             	controlPane.updateGameText("Your king is in check");
                 System.out.println(opponent.getName() + " is in check!");

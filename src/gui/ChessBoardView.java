@@ -13,6 +13,7 @@ import game.Move;
 import interfaces.Drawable;
 import model.Player;
 import model.Position;
+import pieces.King;
 import pieces.Piece;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,30 +27,29 @@ public class ChessBoardView extends GridPane {
     private PieceView[][] pieceViews = new PieceView[8][8];
     private List<Drawable> drawables = new ArrayList<>();
     private List<Rectangle> highlightedTiles = new ArrayList<>();
+    private static King king;
 
     public ChessBoardView(Board board, Game game) {
         this.board = board;
         this.game = game;
         drawBoard();
         drawPieces();
+        ChessBoardView.king = null;
     }
 
     private void drawBoard() {
-        // Add row labels (8-1) on the left side
         for (int i = 0; i < 8; i++) {
             Text rowLabel = new Text(String.valueOf(8 - i));
             rowLabel.setStyle("-fx-font-weight: bold; -fx-fill: black;");
-            add(rowLabel, 0, i + 1); // Place to the left of the board
+            add(rowLabel, 0, i + 1); 
         }
 
-        // Add column labels (a-h) at the bottom
         for (int j = 0; j < 8; j++) {
             Text columnLabel = new Text(String.valueOf((char) ('a' + j)));
             columnLabel.setStyle("-fx-font-weight: bold; -fx-fill: black;");
-            add(columnLabel, j + 1, 9); // Place below the board
+            add(columnLabel, j + 1, 9); 
         }
 
-        // Draw the tiles of the board
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Rectangle tile = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -59,7 +59,7 @@ public class ChessBoardView extends GridPane {
                     tile.setFill(Color.BROWN);
                 }
                 tiles[i][j] = tile;
-                add(tile, j + 1, i + 1); // Offset by 1 for both rows and columns
+                add(tile, j + 1, i + 1); 
 
                 int x = i;
                 int y = j;
@@ -67,8 +67,6 @@ public class ChessBoardView extends GridPane {
             }
         }
     }
-
-
 
     private void drawPieces() {
         for (int i = 0; i < 8; i++) {
@@ -78,7 +76,6 @@ public class ChessBoardView extends GridPane {
                     PieceView pieceView = createPieceView(piece);
                     pieceViews[i][j] = pieceView;
 
-                    // Offset the placement by 1 for both rows and columns
                     add(pieceView.getText(), j + 1, i + 1);
 
                     drawables.add(pieceView);
@@ -87,7 +84,6 @@ public class ChessBoardView extends GridPane {
             }
         }
     }
-
 
     private PieceView createPieceView(Piece piece) {
         if (piece instanceof pieces.King) {
@@ -122,6 +118,7 @@ public class ChessBoardView extends GridPane {
         clearPieces();
         drawables.clear();
         drawPieces();
+        highlightKingWhenCheck(ChessBoardView.king); 
     }
 
     private void handleTileClick(int x, int y) {
@@ -153,6 +150,19 @@ public class ChessBoardView extends GridPane {
         }
     }
 
+    private void highlightKingWhenCheck(King king) {
+        clearHighlights(); 
+
+        if (king != null && game.isInCheck(game.getCurrentPlayer())) {
+            Position kingPosition = king.getPosition();
+            int x = kingPosition.getX();
+            int y = kingPosition.getY();
+            Rectangle tile = tiles[x][y];
+            tile.setFill(Color.LIGHTCORAL);  
+            highlightedTiles.add(tile); 
+        }
+    }
+
     private void clearHighlights() {
         for (Rectangle tile : highlightedTiles) {
             int row = GridPane.getRowIndex(tile);
@@ -165,5 +175,13 @@ public class ChessBoardView extends GridPane {
             }
         }
         highlightedTiles.clear();
+    }
+
+    public King getKing() {
+        return king;
+    }
+
+    public static void setCheckKing(King king) {
+        ChessBoardView.king = king;
     }
 }
