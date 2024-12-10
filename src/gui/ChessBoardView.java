@@ -35,6 +35,21 @@ public class ChessBoardView extends GridPane {
     }
 
     private void drawBoard() {
+        // Add row labels (8-1) on the left side
+        for (int i = 0; i < 8; i++) {
+            Text rowLabel = new Text(String.valueOf(8 - i));
+            rowLabel.setStyle("-fx-font-weight: bold; -fx-fill: black;");
+            add(rowLabel, 0, i + 1); // Place to the left of the board
+        }
+
+        // Add column labels (a-h) at the bottom
+        for (int j = 0; j < 8; j++) {
+            Text columnLabel = new Text(String.valueOf((char) ('a' + j)));
+            columnLabel.setStyle("-fx-font-weight: bold; -fx-fill: black;");
+            add(columnLabel, j + 1, 9); // Place below the board
+        }
+
+        // Draw the tiles of the board
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Rectangle tile = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -44,19 +59,16 @@ public class ChessBoardView extends GridPane {
                     tile.setFill(Color.BROWN);
                 }
                 tiles[i][j] = tile;
-                add(tile, j, i);
+                add(tile, j + 1, i + 1); // Offset by 1 for both rows and columns
 
                 int x = i;
                 int y = j;
-                tile.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        handleTileClick(x, y);
-                    }
-                });
+                tile.setOnMouseClicked(event -> handleTileClick(x, y));
             }
         }
     }
+
+
 
     private void drawPieces() {
         for (int i = 0; i < 8; i++) {
@@ -65,13 +77,17 @@ public class ChessBoardView extends GridPane {
                 if (piece != null) {
                     PieceView pieceView = createPieceView(piece);
                     pieceViews[i][j] = pieceView;
-                    add(pieceView.getText(), j, i);
+
+                    // Offset the placement by 1 for both rows and columns
+                    add(pieceView.getText(), j + 1, i + 1);
+
                     drawables.add(pieceView);
                     pieceView.draw();
                 }
             }
         }
     }
+
 
     private PieceView createPieceView(Piece piece) {
         if (piece instanceof pieces.King) {

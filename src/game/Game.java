@@ -23,12 +23,15 @@ public class Game {
     protected static List<Move> moveHistory;
     protected Timer whiteTimer;
     protected Timer blackTimer;
-
-    public Game(Player whitePlayer, Player blackPlayer) {
-        this.board = new Board();
+    protected Boolean isGamble;
+    private ControlPane controlPane;
+    
+    public Game(Player whitePlayer, Player blackPlayer, Boolean isGamble,ControlPane controlPane) {
+        this.board = new Board(isGamble);
         Game.whitePlayer = whitePlayer;
         Game.blackPlayer = blackPlayer;
         Game.currentPlayer = whitePlayer; 
+        this.controlPane = controlPane;
         this.isGameOver = false;
         this.moveHistory = new ArrayList<>();
        
@@ -87,17 +90,21 @@ public class Game {
             Piece piece = board.getPieceAt(from);
             
             if (isPinned(piece, board)) {
+            	controlPane.updateGameText("This piece is pinned.");
                 throw new IllegalArgumentException("This piece is pinned and cannot be moved.");
             } 
             
             if (isInCheck(currentPlayer)) {
+            	controlPane.updateGameText("Your king is in check");
                 if (!canRemoveCheck(from, to)) {
+             
                     throw new IllegalArgumentException("Cannot move, your king is in check. Move your king or block the check.");
                 }
             }
 
             List<Position> validMoves = piece.getValidMoves(board);
             if (!validMoves.contains(to)) {
+            	controlPane.updateGameText("Invalid move.");
                 throw new IllegalArgumentException("Invalid move.");
             }
 
@@ -122,6 +129,7 @@ public class Game {
                 move = new StandardMove(piece, from, to);
             }
             
+            controlPane.updateGameText("Moved.");
             move.execute(board);
             moveHistory.add(move);
             
@@ -129,17 +137,19 @@ public class Game {
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
-                
+            	controlPane.updateGameText("Your king is in check");
                 System.out.println(opponent.getName() + " is in check!");
 
                 if (isCheckmate(opponent)) {
                     isGameOver = true;
+                    controlPane.updateGameText("Checkmate! " + currentPlayer.getName() + " wins!");
                     System.out.println("Checkmate! " + currentPlayer.getName() + " wins!");
                 }
             } else {
                
                 if (isStalemate(opponent)) {
                     isGameOver = true;
+                    controlPane.updateGameText("Stalemate! The game is a draw.");
                     System.out.println("Stalemate! The game is a draw.");
                 }
             }

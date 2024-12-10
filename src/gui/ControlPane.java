@@ -23,15 +23,16 @@ public class ControlPane extends VBox {
     private static Piece promotedPiece;
     
     
-    public ControlPane(boolean isGamble) {
+    public ControlPane() {
         this.setAlignment(Pos.CENTER);
-        this.setSpacing(20);
+        this.setSpacing(10);
         this.setStyle("-fx-background-color: #2C2C2C; -fx-padding: 20px; -fx-border-color: #444; -fx-border-width: 2px;");
         
         
         HistoryPane historyPane = new HistoryPane();
         historyPane.setPrefWidth(400);
         historyPane.setPrefHeight(2000);
+        historyPane.setStyle("-fx-padding: 10px; -fx-background-color: #1E1E1E; -fx-border-radius: 10px; -fx-background-radius: 10px;");
         this.getChildren().add(historyPane);
         
         // Initialize timer panes with enhanced styles
@@ -183,7 +184,14 @@ public class ControlPane extends VBox {
         turnIndicatorText.setText(playerTurn + "'s Turn");
         turnIndicatorText.setFill(playerTurn.equalsIgnoreCase("white") ? Color.LIGHTBLUE : Color.LIGHTCORAL);
     }
-
+    
+    public void updateGameStatusText(String message) {
+        gameStatusText.setText(message);
+        if(message != "Moved.") {
+        	gameStatusText.setFill(Color.RED);
+        }
+    }
+    
     private void setPromotionPiece(Piece piece) {
         this.promotedPiece = piece;
         System.out.println("Selected promotion: " + piece.getClass().getSimpleName());

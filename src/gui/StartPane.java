@@ -57,22 +57,24 @@ public class StartPane extends VBox {
             if (selectedMode != null) {
                 System.out.println("Starting the game in " + selectedMode + " mode.");
 
-                boolean isGamble = selectedMode == "Gamble" ? true: false ;
+                boolean isGamble = selectedMode.equals("Gamble");
                 
                 
                 Player white = new Player("White", "white", null);
                 Player black = new Player("Black", "black", null);
                 
-               
-                    Game game = new Game(white, black);  
+                ControlPane controlPane = new ControlPane();
+                    Game game = new Game(white, black,isGamble,controlPane);  
                     Board board = game.getBoard();
+                    
+//                    board.setBoardSetup(isGamble);
                     ChessBoardView boardView = new ChessBoardView(board, game);
-                    ControlPane controlPane = new ControlPane(isGamble);
+                    
                     HBox root = new HBox(20);
                     root.getChildren().addAll(boardView, controlPane);
 
                     // Wrap ChessBoardView and ControlPane in a Scene and set it to the primary stage
-                    Scene gameScene = new Scene(root, 960, 640);  // Increase the width here (960px for both components)
+                    Scene gameScene = new Scene(root, 960, 660);  // Increase the width here (960px for both components)
                     primaryStage.setScene(gameScene);
                     
                     // Ensure the game starts
