@@ -10,8 +10,9 @@ public class TimerPane extends VBox {
     private Text timerText;
     
     public TimerPane(int playerIndex) {
+    	this.getChildren().clear();
     	
-        timerText = new Text("00:00:00");
+        timerText = new Text("00:05:00");
         
         timerText.setFont(new Font("Arial", 20)); 
         timerText.setFill(Color.LIGHTGRAY); 

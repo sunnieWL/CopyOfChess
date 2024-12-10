@@ -12,10 +12,8 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import model.Player;
 import model.Position;
-import pieces.Bishop;
 import pieces.King;
 import pieces.Piece;
-import pieces.Queen;
 import pieces.Rook;
 
 public class Game {
@@ -29,7 +27,7 @@ public class Game {
     private Timer blackTimer;
     private ControlPane controlPane;
     
-    public Game(Player whitePlayer, Player blackPlayer, Boolean isGamble,ControlPane controlPane) {
+    public Game(Player whitePlayer, Player blackPlayer, Boolean isGamble, ControlPane controlPane) {
         this.board = new Board(isGamble);
         Game.whitePlayer = whitePlayer;
         Game.blackPlayer = blackPlayer;
@@ -55,38 +53,36 @@ public class Game {
         for (Piece piece : pieces) {
             List<Position> moves = piece.getValidMoves(board);
             for (Position move : moves) {
-                // สร้างบอร์ดใหม่เพื่อคำนวณว่าหนรหรือกันได้ไหม
                 Board tempBoard = board.copy(); 
                 tempBoard.movePiece(piece.getPosition(), move);
-                //(ไลเรื่อยๆทุกรูปแบบ)
-                if (!isInCheckAfterMove(player, tempBoard)) {
+                if (!isInCheckAfterMove(player.getColor(), tempBoard)) {
                     return false; 
                 }
             }
         }
-        return true; // หนีไม่ได้
+        return true; 
     }
 
-    private boolean isInCheckAfterMove(Player player, Board tempBoard) {
-        King king = tempBoard.findKing(player.getColor());
+    private boolean isInCheckAfterMove(String playerColor, Board tempBoard) {
+        King king = tempBoard.findKing(playerColor);
         if (king == null) {
             return true; 
         }
         Position kingPos = king.getPosition();
-        Player opponent = (player == whitePlayer) ? blackPlayer : whitePlayer;
+        Player opponent = (playerColor.equals("white")) ? blackPlayer : whitePlayer;
         List<Piece> opponentPieces = tempBoard.getAllPieces(opponent.getColor());
         for (Piece piece : opponentPieces) {
             if (piece.getValidMoves(tempBoard).contains(kingPos)) {
-                return true;
+                return true; 
             }
         }
-        return false;
+        return false; 
     }
 
     public void makeMove(Position from, Position to) {
         if (isGameOver) {
-        	stopTimer(0);
-        	stopTimer(1);
+            stopTimer(0);
+            stopTimer(1);
             System.out.println("The game is over. No more moves can be made.");
             return;
         }
@@ -94,24 +90,23 @@ public class Game {
         try {
             Piece piece = board.getPieceAt(from);
             
-            if (isPinned(piece, board)) {
-            	controlPane.updateGameText("This piece is pinned.");
-            	playSound("illegal");
+            if (isPinned(piece, board, to)) {
+                controlPane.updateGameText("This piece is pinned.");
+                playSound("illegal");
                 throw new IllegalArgumentException("This piece is pinned and cannot be moved.");
             } 
             
             if (isInCheck(currentPlayer)) {
-            	controlPane.updateGameText("Your king is in check");
+                controlPane.updateGameText("Your king is in check");
                 if (!canRemoveCheck(from, to)) {
-             
                     throw new IllegalArgumentException("Cannot move, your king is in check. Move your king or block the check.");
                 }
             }
 
             List<Position> validMoves = piece.getValidMoves(board);
             if (!validMoves.contains(to)) {
-            	controlPane.updateGameText("Invalid move.");
-            	playSound("illegal");
+                controlPane.updateGameText("Invalid move.");
+                playSound("illegal");
                 throw new IllegalArgumentException("Invalid move.");
             }
 
@@ -121,7 +116,7 @@ public class Game {
             }
             
             Move move;
-            if (piece instanceof King && ((to.getY() >=  from.getY())? to.getY() - from.getY() :from.getY() -to.getY() )   == 2) {
+            if (piece instanceof King && ((to.getY() >=  from.getY()) ? to.getY() - from.getY() : from.getY() - to.getY()) == 2) {
                 // Castling move
                 Rook rook;
                 Position rookFrom, rookTo;
@@ -146,13 +141,13 @@ public class Game {
            
             Player opponent = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             if (isInCheck(opponent)) {
-            	ChessBoardView.setCheckedKing(board.findKing(opponent.getColor()));
-            	playSound("Check");
-            	controlPane.updateGameText("Your king is in check");
+                ChessBoardView.setCheckedKing(board.findKing(opponent.getColor()));
+                playSound("Check");
+                controlPane.updateGameText("Your king is in check");
                 System.out.println(opponent.getName() + " is in check!");
 
                 if (isCheckmate(opponent)) {
-                	playSound("GameOver");
+                    playSound("GameOver");
                     isGameOver = true;
                     controlPane.updateGameText("Checkmate! " + currentPlayer.getName() + " wins!");
                     System.out.println("Checkmate! " + currentPlayer.getName() + " wins!");
@@ -160,7 +155,7 @@ public class Game {
             } else {
                
                 if (isStalemate(opponent)) {
-                	playSound("GameOver");
+                    playSound("GameOver");
                     isGameOver = true;
                     controlPane.updateGameText("Stalemate! The game is a draw.");
                     System.out.println("Stalemate! The game is a draw.");
@@ -168,14 +163,14 @@ public class Game {
             }
             
            if(!isInCheck(opponent) && !isStalemate(opponent) && capturedPiece == null) {
-        	   if(move instanceof CastlingMove) {
-        		   playSound("Castling");
-        	   } else {
-        		   playSound("Move");
-        	   }
+               if(move instanceof CastlingMove) {
+                   playSound("Castling");
+               } else {
+                   playSound("Move");
+               }
            }
 
-            if (!isGameOver) {      	
+            if (!isGameOver) {          
                 switchPlayer();
             }
 
@@ -186,63 +181,29 @@ public class Game {
         }
     }
     
-    private boolean isPinned(Piece piece, Board board) {
+    private boolean isPinned(Piece piece, Board board,Position targetPos) {
         King king = board.findKing(piece.getColor());
-        if (king == null) return false;
+        if (king == null) return false; 
 
         Position kingPos = king.getPosition();
-        List<Piece> opponentPieces = board.getAllPieces(piece.getColor().equals("white") ? "black" : "white");
+        Position piecePos = piece.getPosition();
 
-        for (Piece opponentPiece : opponentPieces) {
-            // เช็ค same lin
-            if (opponentPiece instanceof Rook || opponentPiece instanceof Bishop || opponentPiece instanceof Queen) {
-                if (isPiecePinningKing(opponentPiece, piece, kingPos, board)) {
-                    return true;
-                }
-            }
+        if (!isAligned(kingPos, piecePos)) {
+            return false;
         }
-        return false;
-    }
-    
-    private boolean isPiecePinningKing(Piece opponentPiece, Piece piece, Position kingPos, Board board) {
-        Position opponentPiecePos = opponentPiece.getPosition();
-        // same r or c
-        if (opponentPiece instanceof Rook || opponentPiece instanceof Queen) {
-            if (opponentPiecePos.getX() == kingPos.getX() || opponentPiecePos.getY() == kingPos.getY()) {
-             return isPieceInPath(piece, opponentPiecePos, kingPos, board);
-            }
-        }
-        if (opponentPiece instanceof Bishop || opponentPiece instanceof Queen) {
-        	 if ( ((opponentPiecePos.getX() >= kingPos.getX() )?   opponentPiecePos.getX() - kingPos.getX() : kingPos.getX() -  opponentPiecePos.getX())  ==  ((opponentPiecePos.getY() >= kingPos.getY())? opponentPiecePos.getY() - kingPos.getY(): kingPos.getY()- opponentPiecePos.getY() )) {
-             return isPieceInPath(piece, opponentPiecePos, kingPos, board);
-            }
-        }
-        return false;
-    }
-    
-    private boolean isPieceInPath(Piece piece, Position opponentPiecePos, Position kingPos, Board board) {
-        int dx = Integer.signum(kingPos.getX() - opponentPiecePos.getX());
-        int dy = Integer.signum(kingPos.getY() - opponentPiecePos.getY());
 
-        int x = opponentPiecePos.getX() + dx;
-        int y = opponentPiecePos.getY() + dy;
-        
-        boolean ans = false;
-        
-        while (x != kingPos.getX() || y != kingPos.getY()) {
-            if (board.getPieceAt(x, y) != null) {
-                if (board.getPieceAt(x, y).equals(piece)) {
-                    ans = true; 
-                } else {
-                    return false; 
-                }
-            }
-            x += dx;
-            y += dy;
-        }
-        return ans; 
+        Board tempBoard = board.copy();
+        tempBoard.movePiece(piecePos, targetPos);
+
+        return isInCheckAfterMove(piece.getColor(), tempBoard);
     }
-    
+
+    private boolean isAligned(Position pos1, Position pos2) {
+        return pos1.getX() == pos2.getX() || // Same row
+               pos1.getY() == pos2.getY() || // Same column
+               Math.abs(pos1.getX() - pos2.getX()) == Math.abs(pos1.getY() - pos2.getY()); // Same diagonal
+    }
+
     private boolean canRemoveCheck(Position from, Position to) {
         Piece piece = board.getPieceAt(from);
         if (piece == null) return false;
@@ -253,7 +214,7 @@ public class Game {
         King king = tempBoard.findKing(currentPlayer.getColor());
         if (king == null) return false;  
 
-        return !isInCheckAfterMove(currentPlayer, tempBoard);
+        return !isInCheckAfterMove(currentPlayer.getColor(), tempBoard);
     }
     
     public boolean isStalemate(Player player) {
@@ -267,7 +228,7 @@ public class Game {
             for (Position move : moves) {
                 Board tempBoard = board.copy(); 
                 tempBoard.movePiece(piece.getPosition(), move);
-                if (!isInCheckAfterMove(player, tempBoard)) {
+                if (!isInCheckAfterMove(player.getColor(), tempBoard)) {
                     return false; 
                 }
             }
@@ -279,11 +240,10 @@ public class Game {
     public boolean isInCheck(Player player) {
         King king = board.findKing(player.getColor());
         if (king == null) {
-            // กันเผื่อ
+            // Protect against missing king
             return false;
         }
         Position kingPos = king.getPosition();
-        // มีตัวเช็คคิงไหม
         Player opponent = (player == whitePlayer) ? blackPlayer : whitePlayer;
         List<Piece> opponentPieces = board.getAllPieces(opponent.getColor());
         for (Piece piece : opponentPieces) {
@@ -338,7 +298,6 @@ public class Game {
         ControlPane.updateTurnIndicator(s);
         startTimer(currentPlayer == whitePlayer ? 0 : 1);  
         stopTimer(currentPlayer == whitePlayer ? 1 : 0);
-        
     }
 
     public static List<Move> getMoveHistory() {
@@ -377,5 +336,4 @@ public class Game {
             e.printStackTrace();
         }
     }
-
 }

@@ -76,9 +76,9 @@ public class ControlPane extends VBox {
         );
 
         backButton.setOnAction(e -> {
-            // Switch to StartPane
-            StartPane startPane = new StartPane(stage);  // Assume you have a StartPane class
-            Scene startScene = new Scene(startPane, 800, 600);  // Adjust dimensions as needed
+        	this.getChildren().clear();
+            StartPane startPane = new StartPane(stage);  
+            Scene startScene = new Scene(startPane, 800, 600);  
             stage.setScene(startScene);
         });
 
