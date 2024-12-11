@@ -19,9 +19,10 @@ public class Board {
     private Piece[][] grid;
     private Random random;
     private Boolean isGamble;
+    private static final int BOARD_SIZE = 8;
     
     public Board(Boolean isGamble) {
-        grid = new Piece[8][8];
+        grid = new Piece[BOARD_SIZE][BOARD_SIZE];
         random = new Random();
         this.isGamble  = isGamble;
         setBoardSetup(isGamble);
@@ -36,7 +37,7 @@ public class Board {
         grid[0][5] = new Bishop("black", new Position(0, 5));
         grid[0][6] = new Knight("black", new Position(0, 6));
         grid[0][7] = new Rook("black", new Position(0, 7));
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
             grid[1][i] = new Pawn("black", new Position(1, i));
         }
 
@@ -48,12 +49,12 @@ public class Board {
         grid[7][5] = new Bishop("white", new Position(7, 5));
         grid[7][6] = new Knight("white", new Position(7, 6));
         grid[7][7] = new Rook("white", new Position(7, 7));
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
             grid[6][i] = new Pawn("white", new Position(6, i));
         }
 
         for (int i = 2; i <= 5; i++) {
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 grid[i][j] = null;
             }
         }
@@ -75,13 +76,13 @@ public class Board {
         placePiecesOnRow(blackPieces, 0);
         placePiecesOnRow(whitePieces, 7);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
             grid[1][i] = new Pawn("black", new Position(1, i));
             grid[6][i] = new Pawn("white", new Position(6, i));
         }
 
         for (int i = 2; i <= 5; i++) {
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 grid[i][j] = null;
             }
         }
@@ -135,7 +136,7 @@ public class Board {
     }
     
     public boolean isValidPosition(int x, int y) {
-        return x >=0 && x <8 && y >=0 && y <8;
+        return x >=0 && x <BOARD_SIZE && y >=0 && y <BOARD_SIZE;
     }
 
     public Piece getPieceAt(int x, int y) {
@@ -175,8 +176,8 @@ public class Board {
     }
     
     public King findKing(String color) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = grid[i][j];
                 if (piece instanceof King && piece.getColor().equals(color)) {
                     return (King) piece;
@@ -188,8 +189,8 @@ public class Board {
     
     public List<Piece> getAllPieces(String color) {
         List<Piece> pieces = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = grid[i][j];
                 if (piece != null && piece.getColor().equals(color)) {
                     pieces.add(piece);
@@ -201,8 +202,8 @@ public class Board {
     
     public Board copy() {
         Board newBoard = new Board(isGamble);
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = this.grid[i][j];
                 if (piece != null) {
                     newBoard.grid[i][j] = piece.clone(); // Implement clone in Piece

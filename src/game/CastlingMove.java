@@ -19,7 +19,7 @@ public class CastlingMove extends Move {
     @Override
     public boolean execute(Board board) {
         // Move the king
-        boolean kingMoved = board.movePiece(from, to);
+        boolean kingMoved = board.movePiece(getFrom(), getTo());
         // Move the rook
         board.setPieceAt(rookTo, rook);
         board.removePiece(rookFrom);

@@ -4,9 +4,9 @@ import pieces.Piece;
 import model.Position;
 
 public abstract class Move {
-    protected Piece piece;
-    protected Position from;
-    protected Position to;
+    private Piece piece;
+    private Position from;
+    private Position to;
 
     public Move(Piece piece, Position from, Position to) {
         this.piece = piece;

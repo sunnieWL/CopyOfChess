@@ -14,16 +14,16 @@ public class StandardMove extends Move {
     @Override
     public boolean execute(Board board) {
 
-        boolean moved = board.movePiece(from, to);
+        boolean moved = board.movePiece(getFrom(),getTo());
 
         if (!moved) {
             return false; 
         }
 
-        if (piece instanceof Pawn) {
-            Pawn pawn = (Pawn) piece;
-            if (pawn.canPromote(to)) {
-                handlePawnPromotion(board, pawn, to);
+        if (getPiece() instanceof Pawn) {
+            Pawn pawn = (Pawn) getPiece();
+            if (pawn.canPromote(getTo())) {
+                handlePawnPromotion(board, pawn, getTo());
             }
           
         }

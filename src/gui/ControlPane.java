@@ -22,7 +22,8 @@ public class ControlPane extends VBox {
     private Text gameStatusText;
     private static Text turnIndicatorText; 
     private static Piece promotedPiece;
-    
+    private static final int WHITE_TIMER_INDEX = 0;
+    private static final int BLACK_TIMER_INDEX = 1;
     
     public ControlPane(Stage stage) {
         this.setAlignment(Pos.CENTER);
@@ -36,8 +37,8 @@ public class ControlPane extends VBox {
         historyPane.setStyle("-fx-padding: 10px; -fx-background-color: #1E1E1E; -fx-border-radius: 10px; -fx-background-radius: 10px;");
         this.getChildren().add(historyPane);
         
-        whiteTimerPane = new TimerPane(0);
-        blackTimerPane = new TimerPane(1);
+        whiteTimerPane = new TimerPane(WHITE_TIMER_INDEX);
+        blackTimerPane = new TimerPane(BLACK_TIMER_INDEX);
         
         // white and black text label
         Text whiteTimeLabel = new Text("White Time");
@@ -191,7 +192,7 @@ public class ControlPane extends VBox {
     }
 
     public static void updateTimer(int playerIndex, Timer timer) {
-        if (playerIndex == 0) {
+        if (playerIndex == WHITE_TIMER_INDEX) {
             whiteTimerPane.setTimer(timer);
         } else {
             blackTimerPane.setTimer(timer);
